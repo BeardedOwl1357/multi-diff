@@ -5,6 +5,11 @@ on:
     branches:
       - main  # Trigger deployment only when pushing to main
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
