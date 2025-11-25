@@ -1,5 +1,27 @@
 import React from "react";
 
+const ComparisonComponent = ({parentTab, parentTabIndex, compareResult, onShowDiff}) => {
+  const hasDifferences = (compareResult.differences[parentTabIndex].length > 0);
+  return (
+    <div>
+      <h4>
+        Tab {parentTabIndex + 1} {`'${parentTab.heading}'`} is different from the following tabs
+      </h4>
+      {hasDifferences && (
+        <ul>
+          {compareResult.differences[parentTabIndex].map((childTabIndex, i) => (
+            <li key={childTabIndex}>
+              Tab {childTabIndex + 1} :
+              <button style={{ marginLeft: "0.3em" }} onClick={() => onShowDiff(parentTabIndex, childTabIndex)}>
+                Show diff
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 export default function CompareResults({ tabs, compareResult, sortBeforeCompare, onShowDiff }) {
   if (!compareResult) return null;
 
@@ -29,18 +51,7 @@ export default function CompareResults({ tabs, compareResult, sortBeforeCompare,
       <h3>Comparison Result:</h3>
       {tabs.map((tab, i) => (
         <div key={i}>
-          <b>Tab {i + 1}{tab.heading ? `: ${tab.heading}` : ""}</b> is different from:{" "}
-          {compareResult.differences[i].length > 0
-            ? compareResult.differences[i].map(j => (
-                <span key={j}>
-                  Tab {j + 1}
-                  <button style={{marginLeft: "0.3em"}} onClick={() => onShowDiff(i, j)}>
-                    Show Diff
-                  </button>
-                  {" "}
-                </span>
-              ))
-            : "None"}
+          <ComparisonComponent parentTab={tab} parentTabIndex={i} compareResult={compareResult} onShowDiff={onShowDiff} />
         </div>
       ))}
     </div>

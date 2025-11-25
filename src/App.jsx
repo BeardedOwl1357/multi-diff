@@ -5,7 +5,7 @@ import DiffSelector from "./DiffSelector";
 import TabDiffView from "./TabDiffView";
 import { compareTabs } from "./utils";
 import AppVersion from "./AppVersion";
-import ExclusiveLines from "./ExclusiveLines" ;
+import ExclusiveLines from "./ExclusiveLines";
 
 export default function App() {
   const USERTABS = "userTabs";
@@ -31,7 +31,8 @@ export default function App() {
   const [diffPair, setDiffPair] = useState(null);
   const [tabAIndex, setTabAIndex] = useState(null);
   const [tabBIndex, setTabBIndex] = useState(null);
-  const [showLineDiff, setShowLineDiff] = useState(true);
+  const [showLineDiff, setShowLineDiff] = useState(false);
+  const [showSetdiff, setShowSetdiff] = useState(false);
 
   // Tooltip content for each mode
   const tooltips = {
@@ -53,7 +54,7 @@ export default function App() {
   useEffect(() => {
     console.log("Updating browser storage")
     localStorage.setItem(USERTABS, JSON.stringify(tabs));
-  },[tabs])
+  }, [tabs])
 
   // Add a new tab
   const addTab = () => {
@@ -78,7 +79,7 @@ export default function App() {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial", color: "white" }}>
-      <AppVersion/>
+      <AppVersion />
       <h2>Tab Comparator</h2>
 
       <button onClick={() => {
@@ -97,7 +98,7 @@ export default function App() {
         sortBeforeCompare={sortBeforeCompare}
       />
 
-      {/* Place SORT checkbox here, directly managed by App */}
+      {/* Place SORT checkbox here, directly managed by App
       <label style={{ marginRight: "1rem" }}>
         <input
           type="checkbox"
@@ -105,7 +106,7 @@ export default function App() {
           onChange={e => setSortBeforeCompare(e.target.checked)}
         />{" "}
         Sort input before compare
-      </label>
+      </label> */}
 
       <button onClick={handleCompare} style={{ marginTop: "2rem" }}>
         Compare
@@ -135,63 +136,47 @@ export default function App() {
       />
 
       <div>
-	<label>
-	  <input
-	    type="radio"
-	    checked={showLineDiff}
-	    onChange={() => setShowLineDiff(true)}
-	  />
-	  Show Line Diff
-	  <span
-	    style={{
-	      display: 'inline-block',
-	      marginLeft: 6,
-	      cursor: 'help',
-	      textDecoration: 'underline dotted'
-	    }}
-	    title={tooltips.line}
-	  >&#9432;</span>
-	</label>
-	<br />
-	<label>
-	  <input
-	    type="radio"
-	    checked={!showLineDiff}
-	    onChange={() => setShowLineDiff(false)}
-	  />
-	  Show Set Diff
-	  <span
-	    style={{
-	      display: 'inline-block',
-	      marginLeft: 6,
-	      cursor: 'help',
-	      textDecoration: 'underline dotted'
-	    }}
-	    title={tooltips.set}
-	  >&#9432;</span>
-	</label>
+        <label>
+          <input
+            type="checkbox"
+            checked={showSetdiff}
+            onChange={() => setShowSetdiff(!showSetdiff)}
+          />
+          Show Set Diff : {tooltips.set}
+        </label>
+        
+        <br></br>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={showLineDiff}
+            onChange={() => setShowLineDiff(!showLineDiff)}
+          />
+          Show Line Diff : {tooltips.line}
+        </label>
       </div>
 
-{tabAIndex !== null &&
-  tabBIndex !== null &&
-  tabAIndex !== tabBIndex && (
-    <>
-      {!showLineDiff && (
-        <ExclusiveLines tabs={tabs} indexA={tabAIndex} indexB={tabBIndex} />
-      )}
-      {showLineDiff && (
-        <TabDiffView
-          tabA={tabs[tabAIndex]}
-          tabB={tabs[tabBIndex]}
-          onClose={() => {
-            setTabAIndex(null);
-            setTabBIndex(null);
-          }}
-        />
-      )}
-    </>
-  )
-}
+      {tabAIndex !== null &&
+        tabBIndex !== null &&
+        tabAIndex !== tabBIndex && (
+          <>
+            {showSetdiff && (
+              <ExclusiveLines tabs={tabs} indexA={tabAIndex} indexB={tabBIndex} />
+            )}
+            {showLineDiff && (
+              <TabDiffView
+                tabA={tabs[tabAIndex]}
+                tabB={tabs[tabBIndex]}
+                onClose={() => {
+                  setTabAIndex(null);
+                  setTabBIndex(null);
+                }}
+              />
+            )}
+          </>
+        )
+      }
 
     </div>
   );
