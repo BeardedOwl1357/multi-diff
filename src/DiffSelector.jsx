@@ -18,6 +18,16 @@ export default function DiffSelector({
             ))}
           </select>
         </label>
+
+      <button
+	onClick={() => {
+	  setTabAIndex(tabBIndex); // swap: set A to B
+	  setTabBIndex(tabAIndex); // set B to A
+	}}
+      >
+	Swap A and B
+      </button>
+
         <label>
           Tab B:
           <select value={tabBIndex ?? ""} onChange={e => setTabBIndex(e.target.value === "" ? null : Number(e.target.value))}>

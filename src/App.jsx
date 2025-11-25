@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TabInputList from "./TabInputList";
 import CompareResults from "./CompareResults";
 import DiffSelector from "./DiffSelector";
@@ -8,7 +8,24 @@ import AppVersion from "./AppVersion";
 import ExclusiveLines from "./ExclusiveLines" ;
 
 export default function App() {
-  const [tabs, setTabs] = useState([{ heading: "", text: "" }]);
+  const USERTABS = "userTabs";
+  const [tabs, setTabs] = useState(() => {
+    const objString = localStorage.getItem(USERTABS);
+    if (objString !== null && objString !== "") {
+      // Try to safely parse storage
+      try {
+        return JSON.parse(objString);
+      } catch (e) {
+        console.warn("Corrupted data in localStorage for userTabs. Resetting to default.", e);
+        // Optionally clear the corrupted entry:
+        localStorage.removeItem(USERTABS);
+      }
+    } else {
+      console.log("No data in browser, initializing default tabs");
+    }
+    return [{ heading: "", text: "" }];
+  });
+
   const [sortBeforeCompare, setSortBeforeCompare] = useState(false);
   const [compareResult, setCompareResult] = useState(null);
   const [diffPair, setDiffPair] = useState(null);
@@ -32,6 +49,11 @@ export default function App() {
     setTabs(newTabs);
     setCompareResult(null);
   };
+
+  useEffect(() => {
+    console.log("Updating browser storage")
+    localStorage.setItem(USERTABS, JSON.stringify(tabs));
+  },[tabs])
 
   // Add a new tab
   const addTab = () => {
@@ -103,15 +125,6 @@ export default function App() {
         tabBIndex={tabBIndex}
         setTabBIndex={setTabBIndex}
       />
-
-      <button
-	onClick={() => {
-	  setTabAIndex(tabBIndex); // swap: set A to B
-	  setTabBIndex(tabAIndex); // set B to A
-	}}
-      >
-	Swap A and B
-      </button>
 
       <div>
 	<label>
