@@ -4,6 +4,7 @@ import CompareResults from "./CompareResults";
 import DiffSelector from "./DiffSelector";
 import TabDiffView from "./TabDiffView";
 import { compareTabs } from "./utils";
+import AppVersion from "./AppVersion";
 
 export default function App() {
   const [tabs, setTabs] = useState([{ heading: "", text: "" }]);
@@ -45,6 +46,7 @@ export default function App() {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial", color: "white" }}>
+      <AppVersion/>
       <h2>Tab Comparator</h2>
 
       <TabInputList
