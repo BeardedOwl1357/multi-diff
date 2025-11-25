@@ -5,6 +5,7 @@ import DiffSelector from "./DiffSelector";
 import TabDiffView from "./TabDiffView";
 import { compareTabs } from "./utils";
 import AppVersion from "./AppVersion";
+import ExclusiveLines from "./ExclusiveLines" ;
 
 export default function App() {
   const [tabs, setTabs] = useState([{ heading: "", text: "" }]);
@@ -13,6 +14,15 @@ export default function App() {
   const [diffPair, setDiffPair] = useState(null);
   const [tabAIndex, setTabAIndex] = useState(null);
   const [tabBIndex, setTabBIndex] = useState(null);
+  const [showLineDiff, setShowLineDiff] = useState(true);
+
+  // Tooltip content for each mode
+  const tooltips = {
+    line: "Show line-by-line differences between the inputs.",
+    set: "Show only the lines present in one input and not the other (set difference)."
+  };
+
+
 
   // Tab content change handler
   const handleTabChange = (i, field, value) => {
@@ -94,7 +104,61 @@ export default function App() {
         setTabBIndex={setTabBIndex}
       />
 
-      {tabAIndex !== null && tabBIndex !== null && tabAIndex !== tabBIndex && (
+      <button
+	onClick={() => {
+	  setTabAIndex(tabBIndex); // swap: set A to B
+	  setTabBIndex(tabAIndex); // set B to A
+	}}
+      >
+	Swap A and B
+      </button>
+
+      <div>
+	<label>
+	  <input
+	    type="radio"
+	    checked={showLineDiff}
+	    onChange={() => setShowLineDiff(true)}
+	  />
+	  Show Line Diff
+	  <span
+	    style={{
+	      display: 'inline-block',
+	      marginLeft: 6,
+	      cursor: 'help',
+	      textDecoration: 'underline dotted'
+	    }}
+	    title={tooltips.line}
+	  >&#9432;</span>
+	</label>
+	<br />
+	<label>
+	  <input
+	    type="radio"
+	    checked={!showLineDiff}
+	    onChange={() => setShowLineDiff(false)}
+	  />
+	  Show Set Diff
+	  <span
+	    style={{
+	      display: 'inline-block',
+	      marginLeft: 6,
+	      cursor: 'help',
+	      textDecoration: 'underline dotted'
+	    }}
+	    title={tooltips.set}
+	  >&#9432;</span>
+	</label>
+      </div>
+
+{tabAIndex !== null &&
+  tabBIndex !== null &&
+  tabAIndex !== tabBIndex && (
+    <>
+      {!showLineDiff && (
+        <ExclusiveLines tabs={tabs} indexA={tabAIndex} indexB={tabBIndex} />
+      )}
+      {showLineDiff && (
         <TabDiffView
           tabA={tabs[tabAIndex]}
           tabB={tabs[tabBIndex]}
@@ -104,6 +168,10 @@ export default function App() {
           }}
         />
       )}
+    </>
+  )
+}
+
     </div>
   );
 }
