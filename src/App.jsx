@@ -81,6 +81,14 @@ export default function App() {
       <AppVersion/>
       <h2>Tab Comparator</h2>
 
+      <button onClick={() => {
+        localStorage.removeItem(USERTABS)
+        setTabs([{ heading: "", text: "" }])
+      }}>Clear existing data</button>
+
+      <hr></hr>
+
+
       <TabInputList
         tabs={tabs}
         onTabChange={handleTabChange}
