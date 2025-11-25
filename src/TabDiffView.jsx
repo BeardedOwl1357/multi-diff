@@ -1,5 +1,5 @@
 import React from "react";
-import DiffViewer from "react-diff-viewer";
+import DiffViewer, { DiffMethod } from 'react-diff-viewer';
 
 export default function TabDiffView({ tabA, tabB, onClose }) {
   if (!tabA || !tabB) return null;
@@ -14,6 +14,7 @@ export default function TabDiffView({ tabA, tabB, onClose }) {
       <DiffViewer
         oldValue={tabA.text}
         newValue={tabB.text}
+	compareMethod={DiffMethod.LINES}
         splitView={true}
         styles={{
           diffContainer: { color: "black" },
