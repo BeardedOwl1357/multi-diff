@@ -80,7 +80,7 @@ export default function App() {
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial", color: "white" }}>
       <AppVersion />
-      <h2>Tab Comparator</h2>
+      <h2>Multi Diff by Sanchay Joshi (BeardedOwl1357) </h2>
 
       <button onClick={() => {
         localStorage.removeItem(USERTABS)
